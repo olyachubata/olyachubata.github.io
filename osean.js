@@ -102,7 +102,7 @@ const app = new Vue({
         send_email_admin(subject, message)
     },
     onSubmit() {
-      sessionStorage['osean'] = JSON.stringify(this.editable)
+      //sessionStorage['osean'] = JSON.stringify(this.editable)
       this.next()
     },
     async animate_out(rev=false) {
@@ -138,11 +138,11 @@ const app = new Vue({
   	
   	document.getElementById('app').style.display = 'block'
 
-    try {
-      this.editable = JSON.parse(sessionStorage['osean'])
-    } catch {
-
-    }
+    //try {
+    //  this.editable = JSON.parse(sessionStorage['osean'])
+    //} catch {
+    //
+    //}
   }
 }).$mount('#app')
 
