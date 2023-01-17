@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Email settings</title>
+  <link type="text/css" rel="stylesheet" href="vendor/bootstrap.min.css">
+  <link type="text/css" rel="stylesheet" href="vendor/bootstrap-vue.min.css">
+</head>
+<body>
+  <div id="app" style="display: none">
+    <b-container>
+      <h2>Email settings</h2>
+    <b-form @submit.prevent="onSubmit">
+      <b-form-row>
+      <b-col lg>
+        <b-form-group label="Emails">
+          <b-form-textarea v-model="editable.emails" rows="3" max-rows="30"></b-form-textarea>
+         </b-form-group>
+        </b-form-row>
+      </b-col>
+      <b-form-row>
+      <b-col lg>
+        <b-form-group label="From name">
+          <b-form-input v-model="editable.fromn" type="text" maxlength="50"></b-form-input>
+        </b-form-group>
+      </b-col>
+      </b-form-row>
+      <b-form-row>
+      <b-col lg>
+        <b-button type="submit" variant="primary">Save settings</b-button> 
+        <b-button type="button" variant="secondary" @click="sendTest">Send test email</b-button>
+      </b-col>
+      </b-form-row>
+    </b-form>
+    <pre style="color: red">{{ server_error }}</pre>
+    <span style="color: green" v-if="server_error == null">OK</span>
+    </b-container>
+
+     
+  </div>
+  <script src="vendor/vue.min.js"></script>
+  <script src="vendor/bootstrap-vue.min.js"></script>
+  <script>
+
+const MAILER_ID = 'osean'
+
+const APP_URL = 'https://homserv.net/a/mailer'
+
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+async function request(uri, post_data=null) {
+  var tries = 30
+  var options = {cache: "no-store"}
+  if (post_data) {
+    tries = 1
+    options.method = 'POST'
+    options.body = JSON.stringify(post_data)
+    options.headers = {
+      'Content-Type': 'application/json'
+    }
+  }
+  for (t = 0; t < tries; t ++) {
+    var res = null
+    var raw = null
+    var js = null
+    try {
+      res = await fetch(APP_URL + uri, options)
+      raw = await res.text()
+      js = JSON.parse(raw)
+    } catch {}
+    if (res && res.ok && js) {
+      app.server_error = js.ok ? null : ''
+      if (js.error) { app.server_error = js.error }
+      return js
+    }
+    app.server_error = js ? JSON.stringify(js, null, 2) : (raw ? raw : `fetch ${APP_URL}${uri} failed`)
+    await sleep(2000)
+  }
+}
+
+
+const app = new Vue({
+  data: {
+    editable: {emails: '', fromn: ''},
+    server_error: '',
+    token: ''
+  },
+  methods: {
+    onSubmit() {
+      request('/set_cfg', {mailer_id: MAILER_ID, token: this.token, cfg: this.editable})
+    },
+    sendTest() {
+      request('/send', {mailer_id: MAILER_ID, subject: 'Test message', message: 'Just test'})
+    }
+  },
+  async mounted() {
+    this.token = location.hash.replace('#', '')
+    if (!this.token) {
+      return alert('no token')
+    }
+    this.editable = await request('/get_cfg', {mailer_id: MAILER_ID, token: this.token})
+    document.getElementById('app').style.display = 'block'
+  }
+}).$mount('#app')
+  </script>
+</body>
+</html>

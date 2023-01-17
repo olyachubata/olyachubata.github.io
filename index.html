@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>5 голосів</title>
+  <link rel="icon" href="img/favicon.png" type="image/png">
+  <link rel="apple-touch-icon-precomposed" href="img/touch-icon.png">
+  <link type="text/css" rel="stylesheet" href="vendor/bootstrap.min.css">
+  <link type="text/css" rel="stylesheet" href="vendor/bootstrap-vue.min.css">
+  <link type="text/css" rel="stylesheet" href="osean.css">
+</head>
+<body>
+  <div id="app">
+    <div class="Cardlayout-inner" v-if="state != 'result'">
+    <div v-if="state == 'questions'" class="cardSection">
+      <div class="Question-main">
+        <div class="Question-container">
+          {{ question_num }}) {{ question_title }}
+          <p><em><span class="subheading">{{ _('question') }}  {{ question_num }}\{{ questions_count }}</span></em></p>
+        </div>
+        <b-form-group label="">
+          <b-form-radio @change="change" v-for="answer in answers" v-model="choosed" :value="answer.value" :id="'a'+answer.value" :key="'a'+answer.value">
+          {{ answer.title  }}
+          </b-form-radio>
+        </b-form-group>
+        <div class="mheader" v-if="error">⚠ {{ error }}</div>
+      </div>
+    </div>
+
+    <div v-if="state == 'description'" class="cardSection description">
+        <div class="dheader" v-html="_('title')"></div>
+        <hr>
+        <div v-html="_('description')" class="dtext"></div>
+
+        <div style="text-align: center" class="mheader">{{ _('who') }}</div>
+
+        <div class="uformw">
+        <b-form class="uform" @submit.prevent="onSubmit">
+        <b-form-row>
+          <b-col lg>
+            <b-form-group :label="_('firstname')">
+              <b-form-input v-model="editable.firstname" type="text" placeholder="" maxlength="30" required></b-form-input>
+            </b-form-group>
+          </b-col>
+          <b-col lg>
+            <b-form-group :label="_('lastname')">
+              <b-form-input v-model="editable.lastname" type="text" placeholder="" maxlength="30" required></b-form-input>
+            </b-form-group>
+          </b-col>
+        </b-form-row>
+        <b-form-row>
+          <b-col lg>
+            <b-form-group :label="_('email')">
+              <b-form-input v-model="editable.email" type="email" placeholder="" maxlength="30" required></b-form-input>
+            </b-form-group>
+          </b-col>
+          <b-col lg>
+            <b-form-group :label="_('phone')">
+              <b-form-input v-model="editable.phone" type="text" placeholder="" maxlength="30" required></b-form-input>
+            </b-form-group>
+          </b-col>
+        </b-form-row>
+        <div style="text-align: center; margin: 0 30px"><b-button type="submit" class="start">{{ _('start') }}</b-button></div>
+        
+
+        </b-form>
+        </div>
+    </div>
+
+    
+    
+    <footer class="QuestionFooter" v-if="state == 'questions'">
+      <div class="footer-Pagination">
+        
+
+      <div class="footer-navigation">
+        <a @click.prevent="prev" href="" class="prev">{{ _('prev') }}</a>
+        <a @click.prevent="next" href="" class="next"> {{ _('next') }}</a>
+      </div>
+
+      </div>
+
+    </footer>
+
+
+   
+  </div>
+
+
+
+
+
+
+
+<div v-if="state == 'result'">
+
+
+
+
+
+<div class="result_screen_body_first">
+<div class="result_heading"><h3 class="result_heading_text smFont"><p><p><strong>{{ _('thanks') }}</strong></p></p></h3></div>
+<div class="result_subheading"><h4 class="result_subheading_text smFont"><p></p></h4></div>
+<div class="result_page_media"><div class="result_media">
+<div class="result_media_table">
+
+<div class="table-outer scrollbar realtime-carousel">
+<table class="custom_table">
+<tbody _ngcontent-fei-c90="">
+<tr _ngcontent-fei-c90=""><td>{{ _('abr')[1] }}</td>
+<td>{{ result.res[1] }}</td>
+<td></td>
+</tr>
+<tr _ngcontent-fei-c90=""><td>{{ _('abr')[2] }}</td>
+<td>{{ result.res[2] }}</td>
+<td></td>
+</tr>
+<tr _ngcontent-fei-c90=""><td>{{ _('abr')[3] }}</td>
+<td>{{ result.res[3] }}</td>
+<td></td>
+</tr>
+<tr _ngcontent-fei-c90=""><td>{{ _('abr')[4] }}</td>
+<td>{{ result.res[4] }}</td>
+<td></td>
+</tr>
+<tr _ngcontent-fei-c90=""><td>{{ _('abr')[5] }}</td>
+<td>{{ result.res[5] }}</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+
+</div><div class="table-title"><span class="mheader">{{ _('result') }}</span></div>
+
+</div>
+
+</div>
+</div>
+
+
+
+</div>
+
+<div class="result_screen_body_middle" style="display: block;">
+
+
+<div class="result_list_outer" style="background: none;"><div class="result_outer_list result_0"><div class="result_outer_list_content"><div class="result-visuals"><div class="result_media"><div class="result_media_image"><div class="realtime_img"><div class="img_sec realtime-carousel"><img src="img/1.png" alt="" style="object-fit: cover;"></div>
+</div>
+
+
+</div>
+</div>
+</div>
+<div class="result_content"><h2 class="result_content_tittle smFont"><p class="mheader">&nbsp;{{ _('rh1'+result.summary[1]) }} &nbsp;<span class="fr-deletable var-tag" contenteditable="false">{{ result.res[1] }}</span>&nbsp;</p></h2>
+<h5 class="result_content_text smFont"><p v-html="_('rt1'+result.summary[1])"></p></h5>
+<div class="button_group">
+
+</div>
+</div>
+</div></div><div class="result_outer_list result_1"><div class="result_outer_list_content"><div class="result-visuals"><div class="result_media"><div class="result_media_image"><div class="realtime_img"><div class="img_sec realtime-carousel"><img src="img/2.png" alt="" style="object-fit: cover;"></div>
+</div>
+
+
+</div>
+</div>
+</div>
+<div class="result_content"><h2 class="result_content_tittle smFont"><p class="mheader">&nbsp;{{ _('rh2'+result.summary[2]) }} &nbsp;<span class="fr-deletable var-tag" contenteditable="false">{{ result.res[2] }}</span>&nbsp;</p></h2>
+<h5 class="result_content_text smFont"><p v-html="_('rt2'+result.summary[2])"></p></h5>
+<div class="button_group">
+
+</div>
+</div>
+</div></div><div class="result_outer_list result_2"><div class="result_outer_list_content"><div class="result-visuals"><div class="result_media"><div class="result_media_image"><div class="realtime_img"><div class="img_sec realtime-carousel"><img src="img/3.png" alt="" style="object-fit: cover;"></div>
+</div>
+
+
+</div>
+</div>
+</div>
+<div class="result_content"><h2 class="result_content_tittle smFont"><p class="mheader">{{ _('rh3'+result.summary[3]) }} <span class="fr-deletable var-tag" contenteditable="false">{{ result.res[3] }}</span>&nbsp;</p></h2>
+<h5 class="result_content_text smFont"><p v-html="_('rt3'+result.summary[3])"></p></h5>
+<div class="button_group">
+
+</div>
+</div>
+</div></div><div class="result_outer_list result_3"><div class="result_outer_list_content"><div class="result-visuals"><div class="result_media"><div class="result_media_image"><div class="realtime_img"><div class="img_sec realtime-carousel"><img src="img/4.png" alt="" style="object-fit: cover;"></div>
+</div>
+
+
+</div>
+</div>
+</div>
+<div class="result_content"><h2 class="result_content_tittle smFont"><p class="mheader">{{ _('rh4'+result.summary[4]) }} <span class="fr-deletable var-tag" contenteditable="false">{{ result.res[4] }}</span>&nbsp;</p></h2>
+<h5 class="result_content_text smFont"><p v-html="_('rt4'+result.summary[4])"></p></h5>
+<div class="button_group">
+
+</div>
+</div>
+</div></div><div class="result_outer_list result_4"><div class="result_outer_list_content"><div class="result-visuals"><div class="result_media"><div class="result_media_image"><div class="realtime_img"><div class="img_sec realtime-carousel"><img src="img/5.png" alt="" style="object-fit: cover;"></div>
+</div>
+
+
+</div>
+</div>
+</div>
+<div class="result_content"><h2 class="result_content_tittle smFont"><p class="mheader">{{ _('rh5'+result.summary[5]) }} <span class="fr-deletable var-tag" contenteditable="false">{{ result.res[5] }}</span>&nbsp;</p></h2>
+<h5 class="result_content_text smFont"><p v-html="_('rt5'+result.summary[5])"></p></h5>
+<div class="button_group">
+
+</div>
+</div>
+</div></div>
+</div>
+
+
+
+
+
+</div>
+
+<div class="rfoother">
+&nbsp;<br>
+<div v-html="_('bottom')" class="rfoothertext"></div>
+&nbsp;<br>
+<a href="" class="start">{{ _('again') }}</a>
+</div>
+
+    </div>
+
+
+  </div>
+  <script src="vendor/vue.min.js"></script>
+  <script src="vendor/bootstrap-vue.min.js"></script>
+  <script src="txt.js"></script>
+  <script src="result.js"></script>
+  <script src="osean.js"></script>
+</body>
+</html>
