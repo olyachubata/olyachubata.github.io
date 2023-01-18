@@ -27,7 +27,9 @@ const app = new Vue({
   		return _(v)
   	},
     async set_question(num, rev=false) {
-      if (this.state == 'questions') { await this.animate_out(rev) }
+      if (location.hash != '#aa1') {
+        if (this.state == 'questions') { await this.animate_out(rev) }
+      }
       this.error = ''
       window.scrollTo(0, 0)
       document.activeElement.blur()
@@ -35,10 +37,11 @@ const app = new Vue({
     	this.question_num = num
     	this.question_title = _(`q${num}`)
     	this.choosed = this.choosed_answers[this.question_num]
-      await this.animate_in(rev)
       if (location.hash == '#aa1') {
-          this.choosed = 1
+          this.choosed = Math.floor(Math.random() * 5)+1
           setTimeout(this.next, 5)
+      } else {
+        await this.animate_in(rev)
       }
     },
     prev() {
@@ -100,6 +103,33 @@ const app = new Vue({
         </html>`
 
         send_email_admin(subject, message)
+
+        message = `<!DOCTYPE html>
+        <html lang="uk">
+        <head>
+          <meta charset="utf-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1">
+        </head>
+        <body>
+          <h2>${subject}</h2><br>
+          ${ _('abr')[1] } ${ this.result.res[1] }<br>
+          ${ _('abr')[2] } ${ this.result.res[2] }<br>
+          ${ _('abr')[3] } ${ this.result.res[3] }<br>
+          ${ _('abr')[4] } ${ this.result.res[4] }<br>
+          ${ _('abr')[5] } ${ this.result.res[5] }<br>
+          <hr>
+          <b>${ _('rh1'+this.result.summary[1]) } ${ this.result.res[1] }</b><br>${ _('rt1'+this.result.summary[1]) }<br><br>
+          <b>${ _('rh2'+this.result.summary[2]) } ${ this.result.res[2] }</b><br>${ _('rt2'+this.result.summary[2]) }<br><br>
+          <b>${ _('rh3'+this.result.summary[3]) } ${ this.result.res[3] }</b><br>${ _('rt3'+this.result.summary[3]) }<br><br>
+          <b>${ _('rh4'+this.result.summary[4]) } ${ this.result.res[4] }</b><br>${ _('rt4'+this.result.summary[4]) }<br><br>
+          <b>${ _('rh5'+this.result.summary[5]) } ${ this.result.res[5] }</b><br>${ _('rt5'+this.result.summary[5]) }<br><br>
+          <br>
+          <br>
+        </body>
+        </html>`
+
+        send_email(this.editable.email, subject, message)
+
     },
     onSubmit() {
       this.next()
@@ -157,6 +187,15 @@ function send_email_admin(subject, message) {
     method: 'POST',
     headers: {'Content-Type': 'application/json'},
     body: JSON.stringify({mailer_id: MAILER_ID, subject: subject, message: message})
+  })
+}
+
+function send_email(email, subject, message) {
+  const MAILER_ID = 'osean'
+  fetch('https://homserv.net/a/mailer/send', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({mailer_id: MAILER_ID, subject: subject, message: message, email: email})
   })
 }
 

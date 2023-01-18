@@ -3,18 +3,18 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Email settings</title>
+  <title>Налаштування email</title>
   <link type="text/css" rel="stylesheet" href="vendor/bootstrap.min.css">
   <link type="text/css" rel="stylesheet" href="vendor/bootstrap-vue.min.css">
 </head>
 <body>
   <div id="app" style="display: none">
     <b-container>
-      <h2>Email settings</h2>
+      <h2>Налаштування email</h2>
     <b-form @submit.prevent="onSubmit">
       <b-form-row>
       <b-col lg>
-        <b-form-group label="Emails">
+        <b-form-group label="Email адміністратора (тут можна вказати декілька адрес)">
           <b-form-textarea v-model="editable.emails" rows="3" max-rows="30"></b-form-textarea>
          </b-form-group>
       </b-col>
@@ -25,19 +25,60 @@
           <b-form-input v-model="editable.fromn" type="text" maxlength="50"></b-form-input>
         </b-form-group>
       </b-col>
+      <b-col lg>
+        <b-form-group label="From email">
+          <b-form-input v-model="editable.from_email" type="text" maxlength="50"></b-form-input>
+        </b-form-group>
+      </b-col>
       </b-form-row>
       <b-form-row>
       <b-col lg>
-        <b-button type="submit" variant="primary">Save settings</b-button> 
-        <b-button type="button" variant="secondary" @click="sendTest">Send test email</b-button>
+        <b-form-group label="SMTP username">
+          <b-form-input v-model="editable.smtp_username" type="text" maxlength="50"></b-form-input>
+        </b-form-group>
+      </b-col>
+      <b-col lg>
+        <b-form-group label="SMTP password">
+          <b-form-input v-model="editable.smtp_password" type="password" maxlength="50"></b-form-input>
+        </b-form-group>
+      </b-col>
+      </b-form-row>
+      <b-form-row>
+      <b-col lg>
+        <b-form-group label="SMTP server">
+          <b-form-input v-model="editable.smtp_server" type="text" maxlength="50"></b-form-input>
+        </b-form-group>
+      </b-col>
+      </b-form-row>
+      <b-form-row>
+      <b-col lg>
+        <b-button type="submit" variant="primary">Зберегти налаштування</b-button> 
+        <b-button type="button" variant="secondary" @click="sendTest">Відправити тестового листа</b-button>
       </b-col>
       </b-form-row>
     </b-form>
     <pre style="color: red">{{ server_error }}</pre>
     <span style="color: green" v-if="server_error == null">OK</span>
     </b-container>
-    <footer style="position: fixed; left: 30px; bottom: 30px;">
+    <footer>
+      <b-card>
+      <h3>Як налаштувати адресу, з якої відправляються листи (на прикладі gmail)</h3><br>
+      <b>Важливо:</b>
+      <ul>
+        <li>використовувати основний пароль від аккаунта google не можна</li>
+        <li><u>From email</u> має співпадати з <u>SMTP username</u>, інакше листи підуть у спам</li>
+      </ul>
+      <ol>
+        <li>У вашому аккаунті google треба <a href="https://support.google.com/accounts/answer/185839" target="_blank">увімкнути двохетапну перевірку</a> (якщо не зробили цього раніше)</li>
+        <li><a href="https://support.google.com/accounts/answer/185833" target="_blank">Створити пароль додатка</a>. Вибрати додаток – пошта, пристрій – інше (вказати довільну назву)</li>
+        <li>Ввести пароль додатка на цій сторинці (<u>SMTP password</u>)</li>
+        <li>У полях <u>SMTP username</u> та <u>From email</u> вказати вашу email адресу</li>
+        <li><u>SMTP server</u> – залишити <b>smtp.gmail.com</b></li>
+        <li>Натиснути «Зберегти налаштування», потім «Відправити тестового листа»</li>
+      </ol>
+
       support: <a href="https://t.me/oleksvot">@oleksvot</a>
+      </b-card>
     </footer>
   </div>
   <script src="vendor/vue.min.js"></script>
@@ -85,7 +126,7 @@ async function request(uri, post_data=null) {
 
 const app = new Vue({
   data: {
-    editable: {emails: '', fromn: ''},
+    editable: {},
     server_error: '',
     token: ''
   },
