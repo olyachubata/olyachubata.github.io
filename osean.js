@@ -102,8 +102,12 @@ const app = new Vue({
         send_email_admin(subject, message)
     },
     onSubmit() {
-      //sessionStorage['osean'] = JSON.stringify(this.editable)
       this.next()
+      try {
+        sessionStorage['osean'] = JSON.stringify(this.editable)
+      } catch {
+      
+      }
     },
     async animate_out(rev=false) {
       var em = document.getElementsByClassName('Cardlayout-inner')[0]
@@ -138,11 +142,11 @@ const app = new Vue({
   	
   	document.getElementById('app').style.display = 'block'
 
-    //try {
-    //  this.editable = JSON.parse(sessionStorage['osean'])
-    //} catch {
-    //
-    //}
+    try {
+      this.editable = JSON.parse(sessionStorage['osean'])
+    } catch {
+    
+    }
   }
 }).$mount('#app')
 
